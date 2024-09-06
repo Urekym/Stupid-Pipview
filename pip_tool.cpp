@@ -5,14 +5,14 @@
 #include <dwmapi.h>
 #include <vector>
 #include <string>
-#include "resources.h"
+#include "resource.h"
 
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "gdi32.lib")
 #pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "dwmapi.lib")
 
-//// global variables
+// Global variables
 HWND g_hMainWindow = NULL;
 HWND g_hListBox = NULL;
 HWND g_hPiPWindow = NULL;
@@ -21,11 +21,11 @@ HWND g_hTargetWindow = NULL;
 HWND g_hExitButton = NULL;
 HFONT g_hFont = NULL;
 
-/////////// forward declarations
+// Forward declarations
 LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK PiPWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-/////////////// to populate the list box with window titles
+// Populate the list box with window titles
 void PopulateWindowList() {
     SendMessage(g_hListBox, LB_RESETCONTENT, 0, 0);
     g_windows.clear();
@@ -43,23 +43,19 @@ void PopulateWindowList() {
     }, 0);
 }
 
-/////////// to create the PiP window
+// Create the PiP window
 void CreatePiPWindow(HWND targetWindow) {
     g_hTargetWindow = targetWindow;
 
-    // ///// the screen dimensions
     int screenWidth = GetSystemMetrics(SM_CXSCREEN);
     int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-    /////// the  size for the PiP window (e.g., 1/4 of the screen width)
     int pipWidth = screenWidth / 4;
-    int pipHeight = pipWidth * 9 / 16; ///// 16:9 aspect ratio
+    int pipHeight = pipWidth * 9 / 16; // 16:9 aspect ratio
 
-    /////// the position (bottom-right corner)
     int pipX = screenWidth - pipWidth - 20;
     int pipY = screenHeight - pipHeight - 40;
 
-    ////////// create the PiP window
     g_hPiPWindow = CreateWindowEx(
         WS_EX_TOPMOST | WS_EX_TOOLWINDOW,
         L"PiPWindowClass",
@@ -74,7 +70,6 @@ void CreatePiPWindow(HWND targetWindow) {
         return;
     }
 
-    //////// exit button
     g_hExitButton = CreateWindowEx(0, L"BUTTON", L"×",
         WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
         pipWidth - 20, 0, 20, 20, g_hPiPWindow, (HMENU)1, GetModuleHandle(NULL), NULL);
@@ -83,7 +78,7 @@ void CreatePiPWindow(HWND targetWindow) {
     UpdateWindow(g_hPiPWindow);
 }
 
-/////////////: to update the PiP window content
+// Update the PiP window content
 void UpdatePiPWindow() {
     if (g_hTargetWindow && g_hPiPWindow && IsWindow(g_hTargetWindow)) {
         RECT rcTarget, rcPiP;
@@ -96,7 +91,6 @@ void UpdatePiPWindow() {
         HBITMAP hBitmap = CreateCompatibleBitmap(hdcPiP, rcTarget.right - rcTarget.left, rcTarget.bottom - rcTarget.top);
         HBITMAP hOldBitmap = (HBITMAP)SelectObject(hdcMem, hBitmap);
 
-        // //// use PW_RENDERFULLCONTENT to capture the entire window, including when minimized
         PrintWindow(g_hTargetWindow, hdcMem, PW_RENDERFULLCONTENT);
 
         SetStretchBltMode(hdcPiP, HALFTONE);
@@ -108,17 +102,15 @@ void UpdatePiPWindow() {
         DeleteDC(hdcMem);
         ReleaseDC(g_hPiPWindow, hdcPiP);
     } else if (g_hPiPWindow && !IsWindow(g_hTargetWindow)) {
-        ////// if the target window is closed, close the PiP window
         DestroyWindow(g_hPiPWindow);
     }
 }
 
-// /////window procedure for the main window
+// Window procedure for the main window
 LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
         case WM_CREATE:
         {
-            // Create a custom font
             g_hFont = CreateFont(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, ANSI_CHARSET,
                                  OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
                                  DEFAULT_PITCH | FF_DONTCARE, L"Segoe UI");
@@ -144,6 +136,17 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
             SendMessage(hCloseButton, WM_SETFONT, (WPARAM)g_hFont, TRUE);
 
             PopulateWindowList();
+
+            // the icon
+    HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
+    if (!hIcon) {
+        hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_MYICON));
+    }
+    if (hIcon) {
+        SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+        SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+    }
+
             return 0;
         }
 
@@ -190,7 +193,7 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     }
 }
 
-/////////////// window procedure for the PiP window
+// Window procedure for the PiP window
 LRESULT CALLBACK PiPWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
         case WM_PAINT:
@@ -245,7 +248,7 @@ LRESULT CALLBACK PiPWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
     }
 }
 
-/////// time procedure to update PiP content
+// Timer procedure to update PiP content
 void CALLBACK UpdatePiPTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
     if (g_hPiPWindow && IsWindow(g_hPiPWindow)) {
         InvalidateRect(g_hPiPWindow, NULL, FALSE);
@@ -263,9 +266,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     wcex.style = CS_HREDRAW | CS_VREDRAW;
     wcex.lpfnWndProc = MainWindowProc;
     wcex.hInstance = hInstance;
+    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
+    wcex.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
     wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex.lpszClassName = L"PiPToolClass";
+    wcex.lpszClassName = L"StupidPipviewClass";
 
     if (!RegisterClassEx(&wcex)) {
         MessageBox(NULL, L"Failed to register main window class.", L"Error", MB_OK | MB_ICONERROR);
@@ -288,8 +293,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     g_hMainWindow = CreateWindowEx(
         0,
-        L"PiPToolClass",
-        L"PiP Tool",
+        L"StupidPipviewClass",
+        L"Stupid Pipview",
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT, 330, 300,
         NULL, NULL, hInstance, NULL
