@@ -6,7 +6,7 @@ honestly, no idea. it's completely useless, and you'll probably regret it. but i
 ## Installation (Proceed at Your Own Risk)
 If you still want to install this masterpiece of nothingness:
 
-i use [gcc](https://gcc.gnu.org/) (GNU Compiler Collection), and MSYS64 to run it, [this gentle shows you how](https://youtu.be/oC69vlWofJQ) 
+i've used [gcc](https://gcc.gnu.org/) (GNU Compiler Collection), and MSYS64 to run it, [this gentle shows you how](https://youtu.be/oC69vlWofJQ) 
 
 ```bash
 # Clone the repo like there's no tomorrow
