@@ -5,6 +5,7 @@
 #include <dwmapi.h>
 #include <vector>
 #include <string>
+#include "resources.h"
 
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "gdi32.lib")
