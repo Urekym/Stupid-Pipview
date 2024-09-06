@@ -27,5 +27,5 @@ windres resources.rc -O coff -o resources.res
 g++ pip_tool.cpp resources.res -o StupidPipview.exe -mwindows -lcomctl32 -ldwmapi -lgdi32 -luser32
 ````
 ## For downloading it in Linux
-i don't care use wine.
+i don't care, use wine.
 
