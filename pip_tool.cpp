@@ -63,7 +63,7 @@ void CreatePiPWindow(HWND targetWindow) {
     g_hPiPWindow = CreateWindowEx(
         WS_EX_TOPMOST | WS_EX_TOOLWINDOW,
         L"PiPWindowClass",
-        L"PiP Window",
+        L"Stupid Pipview",
         WS_POPUP | WS_VISIBLE | WS_THICKFRAME,
         pipX, pipY, pipWidth, pipHeight,
         NULL, NULL, GetModuleHandle(NULL), NULL
