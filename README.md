@@ -15,7 +15,7 @@ git clone https://github.com/Urekym/Stupid-Pipview.git
 # Navigate into the abyss
 Stupid-Pipview
 ````
-If you want to do some updates on it and run it, make sure to:
+If you want to do some updates on it and run it, make sure after to:
 
 inside the files in you cli
 
