@@ -17,4 +17,6 @@ git clone https://github.com/Urekym/Stupid-Pipview.git
 # Navigate into the abyss
 Stupid-Pipview
 ````
+## For Linux 
+i don't care use wine.
 
