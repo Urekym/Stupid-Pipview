@@ -12,7 +12,7 @@
 #pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "dwmapi.lib")
 
-// Global variables
+//// global variables
 HWND g_hMainWindow = NULL;
 HWND g_hListBox = NULL;
 HWND g_hPiPWindow = NULL;
@@ -21,11 +21,11 @@ HWND g_hTargetWindow = NULL;
 HWND g_hExitButton = NULL;
 HFONT g_hFont = NULL;
 
-// Forward declarations
+///// forward declarations
 LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK PiPWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-// Populate the list box with window titles
+/////// the list box with window titles
 void PopulateWindowList() {
     SendMessage(g_hListBox, LB_RESETCONTENT, 0, 0);
     g_windows.clear();
@@ -43,7 +43,7 @@ void PopulateWindowList() {
     }, 0);
 }
 
-// Create the PiP window
+///////create the PiP window
 void CreatePiPWindow(HWND targetWindow) {
     g_hTargetWindow = targetWindow;
 
@@ -51,7 +51,7 @@ void CreatePiPWindow(HWND targetWindow) {
     int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
     int pipWidth = screenWidth / 4;
-    int pipHeight = pipWidth * 9 / 16; // 16:9 aspect ratio
+    int pipHeight = pipWidth * 9 / 16; ///// 16:9 aspect ratio
 
     int pipX = screenWidth - pipWidth - 20;
     int pipY = screenHeight - pipHeight - 40;
@@ -78,7 +78,7 @@ void CreatePiPWindow(HWND targetWindow) {
     UpdateWindow(g_hPiPWindow);
 }
 
-// Update the PiP window content
+///////update the PiP window content
 void UpdatePiPWindow() {
     if (g_hTargetWindow && g_hPiPWindow && IsWindow(g_hTargetWindow)) {
         RECT rcTarget, rcPiP;
@@ -106,7 +106,7 @@ void UpdatePiPWindow() {
     }
 }
 
-// Window procedure for the main window
+///////window procedure for the main window
 LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
         case WM_CREATE:
@@ -137,7 +137,7 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
             PopulateWindowList();
 
-            // the icon
+            /////// the icon
     HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
     if (!hIcon) {
         hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_MYICON));
@@ -153,10 +153,10 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         case WM_COMMAND:
         {
             switch (LOWORD(wParam)) {
-                case 2: // Refresh button
+                case 2: //..//// refresh button
                     PopulateWindowList();
                     break;
-                case 3: // Create PiP button
+                case 3: /////// create PiP button
                 {
                     int selectedIndex = SendMessage(g_hListBox, LB_GETCURSEL, 0, 0);
                     if (selectedIndex != LB_ERR && selectedIndex < (int)g_windows.size()) {
@@ -165,7 +165,7 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                     }
                     break;
                 }
-                case 4: // Close button
+                case 4: ///////close button
                     DestroyWindow(hwnd);
                     break;
             }
@@ -193,7 +193,7 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     }
 }
 
-// Window procedure for the PiP window
+/////Window procedure for the PiP window
 LRESULT CALLBACK PiPWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
         case WM_PAINT:
@@ -214,7 +214,7 @@ LRESULT CALLBACK PiPWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 
         case WM_COMMAND:
         {
-            if (LOWORD(wParam) == 1) { // Exit button
+            if (LOWORD(wParam) == 1) { ////// exit button
                 DestroyWindow(hwnd);
             }
             return 0;
@@ -248,7 +248,7 @@ LRESULT CALLBACK PiPWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
     }
 }
 
-// Timer procedure to update PiP content
+//////timer procedure to update PiP content
 void CALLBACK UpdatePiPTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
     if (g_hPiPWindow && IsWindow(g_hPiPWindow)) {
         InvalidateRect(g_hPiPWindow, NULL, FALSE);
@@ -308,7 +308,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     ShowWindow(g_hMainWindow, nCmdShow);
     UpdateWindow(g_hMainWindow);
 
-    SetTimer(NULL, 0, 16, UpdatePiPTimerProc);  // Update at ~60 FPS
+    SetTimer(NULL, 0, 16, UpdatePiPTimerProc);  ////// update at ~60 FPS what a joke haha
 
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0)) {
